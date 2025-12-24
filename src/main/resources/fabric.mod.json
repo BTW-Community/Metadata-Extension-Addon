@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "metadataextension",
+  "id": "metadataext",
   "version": "${version}",
   "name": "Metadata Extension Addon",
   "description": "This addon adds additional metadata space to the game.",
