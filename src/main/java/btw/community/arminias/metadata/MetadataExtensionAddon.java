@@ -1,7 +1,7 @@
 package btw.community.arminias.metadata;
 
 
-import btw.BTWAddon;
+import api.BTWAddon;
 import btw.block.BTWBlocks;
 import net.minecraft.src.Block;
 

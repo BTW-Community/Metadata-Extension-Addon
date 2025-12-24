@@ -64,10 +64,10 @@ public abstract class BlockPistonBaseMixin extends Block {
                     par1World.rand.nextFloat() * 0.25F + 0.6F);
         }
         else if (par5 == 1) {
-            TileEntity var16 = par1World.getBlockTileEntity(par2 + Facing.offsetsXForSide[par6], par3 + Facing.offsetsYForSide[par6], par4 + Facing.offsetsZForSide[par6]);
+            TileEntity var16 =
+                    par1World.getBlockTileEntity(par2 + Facing.offsetsXForSide[par6], par3 + Facing.offsetsYForSide[par6], par4 + Facing.offsetsZForSide[par6]);
 
-            if (var16 instanceof TileEntityPiston)
-            {
+            if (var16 instanceof TileEntityPiston) {
                 ((TileEntityPiston) var16).clearPistonTileEntity();
             }
             //EDITMICRO
@@ -75,8 +75,7 @@ public abstract class BlockPistonBaseMixin extends Block {
             ((WorldExtension) par1World).setBlockWithExtra(par2, par3, par4, Block.pistonMoving.blockID, par6, 3, extra);
             par1World.setBlockTileEntity(par2, par3, par4, PistonHelper.getTileEntity(this.blockID, par6, par6, false, true, extra));
 
-            if (this.isSticky)
-            {
+            if (this.isSticky) {
                 int var8 = par2 + Facing.offsetsXForSide[par6] * 2;
                 int var9 = par3 + Facing.offsetsYForSide[par6] * 2;
                 int var10 = par4 + Facing.offsetsZForSide[par6] * 2;
@@ -86,16 +85,13 @@ public abstract class BlockPistonBaseMixin extends Block {
                 extra = ((WorldExtension) par1World).getBlockExtraMetadata(var8, var9, var10);
                 boolean var13 = false;
 
-                if (var11 == Block.pistonMoving.blockID)
-                {
+                if (var11 == Block.pistonMoving.blockID) {
                     TileEntity var14 = par1World.getBlockTileEntity(var8, var9, var10);
 
-                    if (var14 instanceof TileEntityPiston)
-                    {
+                    if (var14 instanceof TileEntityPiston) {
                         TileEntityPiston var15 = (TileEntityPiston) var14;
 
-                        if (var15.getPistonOrientation() == par6 && var15.isExtending())
-                        {
+                        if (var15.getPistonOrientation() == par6 && var15.isExtending()) {
                             var15.clearPistonTileEntity();
                             var11 = var15.getStoredBlockID();
                             var12 = var15.getBlockMetadata();
@@ -103,20 +99,25 @@ public abstract class BlockPistonBaseMixin extends Block {
                             var13 = true;
                         }
                     }
+                    // +++START EDIT+++
                 }
 
                 Block targetBlock = Block.blocksList[var11];
 
                 if (!var13 && targetBlock != null &&
                         targetBlock.canBlockBePulledByPiston(par1World, var8, var9, var10, Block.getOppositeFacing(par6)))
+                // ---END EDIT---
                 {
+                    // +++START EDIT+++
                     // FCMOD: Added
                     var12 = targetBlock.adjustMetadataForPistonMove(var12);
                     // END FCMOD
 
+                    // ---END EDIT---
                     par2 += Facing.offsetsXForSide[par6];
                     par3 += Facing.offsetsYForSide[par6];
                     par4 += Facing.offsetsZForSide[par6];
+                    // +++START EDIT+++
 
                     NBTTagCompound tileEntityData = getBlockTileEntityData(par1World, var8, var9, var10);
                     par1World.removeBlockTileEntity(var8, var9, var10);
@@ -125,6 +126,13 @@ public abstract class BlockPistonBaseMixin extends Block {
                     ((WorldExtension) par1World).setBlockWithExtra(par2, par3, par4, Block.pistonMoving.blockID, var12, 3, extra);
                     par1World.setBlockTileEntity(par2, par3, par4, PistonHelper.getTileEntity(var11, var12, Block.getOppositeFacing(par6), true, false, extra));
                     ((TileEntityPiston) par1World.getBlockTileEntity(par2, par3, par4)).storeTileEntity(tileEntityData);
+                    // +++START EDIT+++
+                    TileEntityPiston pistonTileEntity = ((TileEntityPiston) par1World.getBlockTileEntity(par2, par3, par4));
+
+                    if(pistonTileEntity != null) {
+                        pistonTileEntity.storeTileEntity(tileEntityData);
+                    }
+                    // ---END EDIT---
                     par1World.setBlockToAir(var8, var9, var10);
                 }
                 else if (!var13) {

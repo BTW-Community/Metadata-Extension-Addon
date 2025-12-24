@@ -1,5 +1,10 @@
 package btw.community.arminias.metadata.mixin;
 
+import api.achievement.AchievementEventDispatcher;
+import api.block.MechanicalBlock;
+import api.block.util.MechPowerUtils;
+import api.world.BlockPos;
+import btw.achievement.BTWAchievementEvents;
 import btw.community.arminias.metadata.PistonHelper;
 import btw.community.arminias.metadata.extension.WorldExtension;
 import net.minecraft.src.*;
@@ -90,6 +95,9 @@ public abstract class PistonBlockBaseMixin extends Block {
 
                             world.setBlockTileEntity(ejectX, ejectY, ejectZ,
                                     PistonHelper.getShoveledTileEntity(movingBlockID, movingBlockMetadata, shovelEjectDirection, movingBlockExtraMetadata));
+
+                            AchievementEventDispatcher.triggerEventForNearbyPlayers(
+                                    BTWAchievementEvents.PistonShovelEvent.class, world, new BlockPos(ejectX, ejectY, ejectZ));
                         }
                         else {
                             movingBlock.onBrokenByPistonPush(world, offsetX, offsetY, offsetZ, movingBlockMetadata);
@@ -128,13 +136,20 @@ public abstract class PistonBlockBaseMixin extends Block {
                 }
                 else {
                     if (Block.blocksList[movingBlockID] != null) {
+                        if (Block.blocksList[movingBlockID] instanceof MechanicalBlock mechanicalBlock) {
+                            MechPowerUtils.destroyAttachedAxles(world, movingX, movingY, movingZ, mechanicalBlock);
+                        }
+
                         movingBlockMetadata = Block.blocksList[movingBlockID].adjustMetadataForPistonMove(movingBlockMetadata);
                     }
 
                     ((WorldExtension) world).setBlockWithExtra(offsetX, offsetY, offsetZ, Block.pistonMoving.blockID, movingBlockMetadata, 4, movingBlocExtraMetadata);
                     world.setBlockTileEntity(offsetX, offsetY, offsetZ, PistonHelper.getTileEntity(movingBlockID, movingBlockMetadata, facingTo, true, false, movingBlocExtraMetadata));
                     if (tileEntityData != null) {
-                        ((TileEntityPiston) world.getBlockTileEntity(offsetX, offsetY, offsetZ)).storeTileEntity(tileEntityData);
+                        TileEntityPiston pistonTileEntity = ((TileEntityPiston) world.getBlockTileEntity(offsetX, offsetY, offsetZ));
+                        if(pistonTileEntity != null) {
+                            pistonTileEntity.storeTileEntity(tileEntityData);
+                        }
                     }
                 }
 

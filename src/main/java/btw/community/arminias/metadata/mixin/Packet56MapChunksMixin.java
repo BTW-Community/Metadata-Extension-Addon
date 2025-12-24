@@ -50,7 +50,6 @@ public class Packet56MapChunksMixin {
 
     /**
      * @author Arminias
-     * @reason
      */
     @Overwrite
     public void readPacketData(DataInput par1DataInputStream) {
